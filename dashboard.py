@@ -261,17 +261,18 @@ with divs[7]:
                     var_name="variable", value_name="value")
     if modo =="Normalizada":
         largo2["value_plot"] = largo2.groupby("variable")["value"].transform(
-            lambda s: (s - s.min()) / (s.max() - s.min() + 1e-12))
+            lambda s: (s-s.min()) /(s.max()-s.min()+1e-12))
     else:
         largo2["value_plot"] = largo2["value"]
 
     #Promedio por estación
     prom = largo2.groupby(["estacion","variable"])["value_plot"].mean().reset_index()
     prom["estacion"] =pd.Categorical(prom["estacion"], categories=estacionesord, ordered=True)
-    fig = px.bar(prom, x="estacion", y="value_plot", color="variable", barmode="group",
-                title=f"Promedio por estación ({modo})")
+    fig =px.bar(prom, x="estacion", y="value_plot", color="variable", barmode="group",
+                title=f"Promedio por estación")
     st.plotly_chart(fig, use_container_width=True)
 
-    fig2 = px.box(largo2, x="estacion", y="value_plot", color="variable",
-                title=f"Distribución por estación ({modo})")
+    fig2 =px.box(largo2, x="estacion", y="value_plot", color="variable",
+                title=f"Distribución por estación")
     st.plotly_chart(fig2, use_container_width=True)
+
