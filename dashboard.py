@@ -240,8 +240,7 @@ with divs[6]:
     #min-max
     largom["valor_norm"] = largom.groupby("contaminante")["valor"].transform(
         lambda s: (s - s.min()) / (s.max()-s.min()+1e-12))
-    figm_norm = px.line(largom, x="mes", y="valor_norm", color="contaminante",markers=True,
-        title="Promedio normalizado por mes")
+    figm_norm = px.line(largom, x="mes", y="valor_norm", color="contaminante",markers=True)
     st.plotly_chart(figm_norm, use_container_width=True)
 
     # Anual
@@ -251,8 +250,7 @@ with divs[6]:
     largoa["valor_norm"] = largoa.groupby("contaminante")["valor"].transform(
         lambda s: (s - s.min())/ (s.max()-s.min()+1e-12))
 
-    figa_norm = px.line(largoa, x="año", y="valor", color="contaminante", markers=True,
-        title="Promedio normalizado por año")
+    figa_norm = px.line(largoa, x="anio", y="valor_norm", color="contaminante", markers=True)
     st.plotly_chart(figa_norm, use_container_width=True)
 
 #Tab 8: Estadísticas por estación
