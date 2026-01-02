@@ -165,3 +165,15 @@ with divs[1]:
         fig =px.line(largo, x="fecha", y="valor", color="contaminante",
                       title=f"Suavizado usando {metodo} para {window} días")
         st.plotly_chart(fig, use_container_width=True)
+
+#Tab 3: Correlación
+with divs[2]:
+    st.subheader("Correlación entre contaminantes")
+    corr = df_f[seleccionados].corr()
+    fig =px.imshow(corr, aspect="auto", zmin=-1, zmax=1, title="Matriz de correlación")
+    st.plotly_chart(fig, use_container_width=True)
+
+#Normalización con z
+x= df_f[["fecha"]+seleccionados].set_index("fecha").dropna()
+xz= (x-x.mean(axis=0)) / (x.std(axis=0).replace(0,np.nan))
+xz= xz.dropna(axis=0, how="any")
