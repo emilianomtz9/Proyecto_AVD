@@ -1,3 +1,7 @@
+#Martínez Salinas Emiliano
+#Huerta Rodríguez Sofía
+#5AM1
+
 import os
 import numpy as np
 import pandas as pd
