@@ -177,3 +177,32 @@ with divs[2]:
 x= df_f[["fecha"]+seleccionados].set_index("fecha").dropna()
 xz= (x-x.mean(axis=0)) / (x.std(axis=0).replace(0,np.nan))
 xz= xz.dropna(axis=0, how="any")
+
+#Tab 4: MDS
+with divs[3]:
+    st.subheader("MDS entre contaminantes")
+    if len(xz)<30:
+        st.error("Muy pocos datos para ocupar MDS")
+    else:
+        matriz= matrizDistancia(xz, metrica)
+        z = funcionMDS(matriz)
+        fig = px.scatter(z, x="MDS1", y="MDS2", text="variable", hover_name="variable", 
+                         title=f"MDS con estandarización ")
+        fig.update_traces(textposition="top center")
+        st.plotly_chart(fig, use_container_width=True)
+
+#Tab 5: PCA
+with divs[4]:
+    st.subheader("PCA entre contaminantes")
+    if len(xz)< 30:
+        st.error("Muy pocos datos para ocupar PCA")
+    else:
+        pca_df, evr = PCA(xz)
+        fig1 = px.scatter(pca_df, x="PC1", y="PC2", text="variable", hover_name="variable",
+                          title="PCA sobre contaminantes con estandarización")
+        fig1.update_traces(textposition="top center")
+        st.plotly_chart(fig1, use_container_width=True)
+
+        fig2 = px.bar(x=["PC1", "PC2"], y=evr, labels={"x": "Componente", "y": "Variabilidad"},
+                      title="Variabilidad por componente")
+        st.plotly_chart(fig2, use_container_width=True)
