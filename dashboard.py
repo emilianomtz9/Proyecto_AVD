@@ -236,19 +236,25 @@ with divs[6]:
     st.markdown("Promedio histórico por mes")
     mensual = df_f.groupby("mes")[seleccionados].mean().reset_index()
     largom = mensual.melt(id_vars=["mes"], var_name="contaminante", value_name="valor")
-    figm = px.line(largom, x="mes", y="valor",facet_col="contaminante", facet_col_wrap=3,
-        markers=True,title="Promedio por mes")
-    st.plotly_chart(figm, use_container_width=True)
+
+    #min-max
+    largom["valor_norm"] = largom.groupby("contaminante")["valor"].transform(
+        lambda s: (s - s.min()) / (s.max()-s.min()+1e-12))
+    figm_norm = px.line(largom, x="mes", y="valor_norm", color="contaminante",markers=True,
+        title="Promedio normalizado por mes")
+    st.plotly_chart(figm_norm, use_container_width=True)
 
     # Anual
     st.markdown("Promedio por año")
-    anual = df_f.groupby("anio")[seleccionados].mean().reset_index()
-    largoa = anual.melt(id_vars=["anio"], var_name="contaminante", value_name="valor")
+    anual =df_f.groupby("anio")[seleccionados].mean().reset_index()
+    largoa =anual.melt(id_vars=["anio"], var_name="contaminante", value_name="valor")
+    largoa["valor_norm"] = largoa.groupby("contaminante")["valor"].transform(
+        lambda s: (s - s.min())/ (s.max()-s.min()+1e-12))
 
-    figa = px.line(largoa, x="anio", y="valor",facet_col="contaminante", facet_col_wrap=3,
-        markers=True,title="Promedio por año")
-    figm.for_each_yaxis(lambda ax: ax.update(matches=None))
-    st.plotly_chart(figa, use_container_width=True)
+    figa_norm = px.line(
+        largoa, x="anio", y="valor_norm", color="contaminante", markers=True,
+        title="Promedio normalizado por año")
+    st.plotly_chart(figa_norm, use_container_width=True)
 
 #Tab 8: Estadísticas por estación
 with divs[7]:
