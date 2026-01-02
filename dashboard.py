@@ -256,15 +256,22 @@ with divs[6]:
 #Tab 8: Estadísticas por estación
 with divs[7]:
     st.subheader("Comparación por estación del año")
+    modo = st.radio("Escala", ["Real", "Normalizada"], horizontal=True)
+    largo2 = df_f.melt(id_vars=["estacion"], value_vars=seleccionados,
+                    var_name="variable", value_name="value")
+    if modo =="Normalizada":
+        largo2["value_plot"] = largo2.groupby("variable")["value"].transform(
+            lambda s: (s - s.min()) / (s.max() - s.min() + 1e-12))
+    else:
+        largo2["value_plot"] = largo2["value"]
 
     #Promedio por estación
-    temporadas= (df_f.groupby("estacion")[seleccionados] .mean().reindex(estacionesord).reset_index())
-    long = temporadas.melt(id_vars=["estacion"], var_name="variable", value_name="value")
-    fig = px.bar(long, x="estacion", y="value", color="variable", barmode="group",
-                 title="Promedio por estación")
+    prom = largo2.groupby(["estacion","variable"])["value_plot"].mean().reset_index()
+    prom["estacion"] =pd.Categorical(prom["estacion"], categories=estacionesord, ordered=True)
+    fig = px.bar(prom, x="estacion", y="value_plot", color="variable", barmode="group",
+                title=f"Promedio por estación ({modo})")
     st.plotly_chart(fig, use_container_width=True)
 
-    #Gráfica de caja por estación
-    long2 =df_f.melt(id_vars=["estacion"], value_vars=seleccionados, var_name="variable", value_name="value")
-    fig2 = px.box(long2, x="estacion", y="value", color="variable", title="Distribución por estación")
-    st.plotly_chart(fig2, use_container_width=True)
+    fig2 = px.box(largo2, x="estacion", y="value_plot", color="variable",
+                title=f"Distribución por estación ({modo})")
+    st.plotly_chart(fig2, use_container_width=True
