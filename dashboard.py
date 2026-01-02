@@ -148,7 +148,7 @@ divs = st.tabs(["Dataset", "Series de tiempo", "Correlación", "MDS", "PCA", "Se
 with divs[0]:
     c1,c2,c3 = st.columns(3)
     c1.metric("Filas", f"{len(df_f):,}")
-    c2.metric("Contaminantes", f"{len(seleccionados)}")
+    c2.metric("Variables", f"{len(seleccionados)}")
     c3.metric("Rango", "2015 → 2023")
     st.subheader("Vista previa")
     st.dataframe(df_f[["fecha", "estacion"] + seleccionados].head(15), use_container_width=True)
@@ -231,22 +231,22 @@ with divs[5]:
 #Tab 7: Resumen temporal
 with divs[6]:
     st.subheader("Resumen temporal")
+
     #Mensual
     st.markdown("Promedio histórico por mes")
-    mensual=df_f.groupby("mes")[seleccionados].mean().reset_index()
-    largom =mensual.melt(id_vars=["mes"], var_name="contaminante", value_name="valor")
-
-    figm = px.line(largom, x="mes", y="valor", color="contaminante", markers=True, 
-                    title="Promedio por mes")
+    mensual = df_f.groupby("mes")[seleccionados].mean().reset_index()
+    largom = mensual.melt(id_vars=["mes"], var_name="contaminante", value_name="valor")
+    figm = px.line(largom, x="mes", y="valor",facet_col="contaminante", facet_col_wrap=3,
+        markers=True,title="Promedio por mes (escala independiente por contaminante)")
     st.plotly_chart(figm, use_container_width=True)
 
-    #Anual
+    # Anual
     st.markdown("Promedio por año")
     anual = df_f.groupby("anio")[seleccionados].mean().reset_index()
-    largoa =anual.melt(id_vars=["anio"], var_name="contaminante", value_name="valor")
+    largoa = anual.melt(id_vars=["anio"], var_name="contaminante", value_name="valor")
 
-    figa = px.line(largoa, x="anio", y="valor", color="contaminante", markers=True,
-                   title="Promedio por año")
+    figa = px.line(largoa, x="anio", y="valor",facet_col="contaminante", facet_col_wrap=3,
+        markers=True,title="Promedio por año (escala independiente por contaminante)")
     st.plotly_chart(figa, use_container_width=True)
 
 #Tab 8: Estadísticas por estación
