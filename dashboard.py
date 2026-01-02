@@ -148,7 +148,7 @@ divs = st.tabs(["Dataset", "Series de tiempo", "Correlación", "MDS", "PCA", "Se
 with divs[0]:
     c1,c2,c3 = st.columns(3)
     c1.metric("Filas", f"{len(df_f):,}")
-    c2.metric("Variables", f"{len(seleccionados)}")
+    c2.metric("Contaminantes", f"{len(seleccionados)}")
     c3.metric("Rango", "2015 → 2023")
     st.subheader("Vista previa")
     st.dataframe(df_f[["fecha", "estacion"] + seleccionados].head(15), use_container_width=True)
