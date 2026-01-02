@@ -197,7 +197,7 @@ with divs[4]:
     if len(xz)< 30:
         st.error("Muy pocos datos para ocupar PCA")
     else:
-        pca_df, evr = PCA(xz)
+        pca_df, evr = pcaContaminantes(xz)
         fig1 = px.scatter(pca_df, x="PC1", y="PC2", text="variable", hover_name="variable",
                           title="PCA sobre contaminantes con estandarización")
         fig1.update_traces(textposition="top center")
@@ -207,7 +207,7 @@ with divs[4]:
                       title="Variabilidad por componente")
         st.plotly_chart(fig2, use_container_width=True)
 
-#Tab 6: Secuencias ************************
+#Tab 6: Secuencias***
 with divs[5]:
     st.subheader("Relaciones de secuencia con desfase")
     c1, c2= st.columns(2)
@@ -227,4 +227,3 @@ with divs[5]:
         st.plotly_chart(fig, use_container_width=True)
         mejor = cc.loc[cc["corr"].abs().idxmax()]
         st.success(f"Lag con correlación máxima: {int(mejor['lag'])} días (corr = {mejor['corr']:.3f})")
-
