@@ -247,3 +247,19 @@ with divs[6]:
     figa = px.line(largoa, x="anio", y="valor", color="contaminante", markers=True,
                    title="Promedio por año")
     st.plotly_chart(figa, use_container_width=True)
+
+#Tab 8: Estadísticas por estación
+with divs[7]:
+    st.subheader("Comparación por estación del año")
+    
+    #Promedio por estación
+    temporadas= (df_f.groupby("estacion")[seleccionados] .mean().reindex(estacionesord).reset_index())
+    long = temporadas.melt(id_vars=["estacion"], var_name="variable", value_name="value")
+    fig = px.bar(long, x="estacion", y="value", color="variable", barmode="group",
+                 title="Promedio por estación")
+    st.plotly_chart(fig, use_container_width=True)
+
+    #Gráfica de caja por estación
+    long2 =df_f.melt(id_vars=["estacion"], value_vars=seleccionados, var_name="variable", value_name="value")
+    fig2 = px.box(long2, x="estacion", y="value", color="variable", title="Distribución por estación")
+    st.plotly_chart(fig2, use_container_width=True)
