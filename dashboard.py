@@ -274,4 +274,4 @@ with divs[7]:
 
     fig2 = px.box(largo2, x="estacion", y="value_plot", color="variable",
                 title=f"Distribución por estación ({modo})")
-    st.plotly_chart(fig2, use_container_width=True
+    st.plotly_chart(fig2, use_container_width=True)
