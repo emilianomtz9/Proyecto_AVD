@@ -206,3 +206,25 @@ with divs[4]:
         fig2 = px.bar(x=["PC1", "PC2"], y=evr, labels={"x": "Componente", "y": "Variabilidad"},
                       title="Variabilidad por componente")
         st.plotly_chart(fig2, use_container_width=True)
+
+#Tab 6: Secuencias ************************
+with divs[5]:
+    st.subheader("Relaciones de secuencia con desfase")
+    c1, c2= st.columns(2)
+    with c1:
+        a = st.selectbox("Variable 1", seleccionados, index=0)
+    with c2:
+        b = st.selectbox("Variable 2", seleccionados, index=min(1,len(seleccionados)-1))
+
+    lagmax= st.slider("Lag máximo en días", 1,180,60,1)
+    temp= df_f[["fecha", a, b]].dropna()
+    if len(temp)< 0:
+        st.error("Muy pocos datos para la secuencia de lags")
+    else:
+        cc = correlacionCruzada(temp[a].to_numpy(),temp[b].to_numpy(), max_lag=lagmax)
+        fig = px.line(cc, x="lag", y="correlación", title=f"Correlación cruzada entre {a} y {b}")
+        fig.add_hline(y=0)
+        st.plotly_chart(fig, use_container_width=True)
+        mejor = cc.loc[cc["corr"].abs().idxmax()]
+        st.success(f"Lag con correlación máxima: {int(mejor['lag'])} días (corr = {mejor['corr']:.3f})")
+
