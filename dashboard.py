@@ -251,8 +251,7 @@ with divs[6]:
     largoa["valor_norm"] = largoa.groupby("contaminante")["valor"].transform(
         lambda s: (s - s.min())/ (s.max()-s.min()+1e-12))
 
-    figa_norm = px.line(
-        largoa, x="anio", y="valor_norm", color="contaminante", markers=True,
+    figa_norm = px.line(largoa, x="año", y="valor", color="contaminante", markers=True,
         title="Promedio normalizado por año")
     st.plotly_chart(figa_norm, use_container_width=True)
 
