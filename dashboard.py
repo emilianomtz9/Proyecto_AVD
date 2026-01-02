@@ -149,7 +149,7 @@ with divs[0]:
     c1,c2,c3 = st.columns(3)
     c1.metric("Filas", f"{len(df_f):,}")
     c2.metric("Variables", f"{len(seleccionados)}")
-    c3.metric("Rango", f"{df_f['fecha'].min().date()} → {df_f['fecha'].max().date()}")
+    c3.metric("Rango", "2015 → 2023")
     st.subheader("Vista previa")
     st.dataframe(df_f[["fecha", "estacion"] + seleccionados].head(15), use_container_width=True)
 
@@ -230,6 +230,7 @@ with divs[5]:
 
 #Tab 7: Resumen temporal
 with divs[6]:
+    st.subheader("Resumen temporal")
     #Mensual
     st.markdown("Promedio histórico por mes")
     mensual=df_f.groupby("mes")[seleccionados].mean().reset_index()
@@ -251,7 +252,7 @@ with divs[6]:
 #Tab 8: Estadísticas por estación
 with divs[7]:
     st.subheader("Comparación por estación del año")
-    
+
     #Promedio por estación
     temporadas= (df_f.groupby("estacion")[seleccionados] .mean().reindex(estacionesord).reset_index())
     long = temporadas.melt(id_vars=["estacion"], var_name="variable", value_name="value")
