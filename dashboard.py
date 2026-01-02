@@ -237,7 +237,7 @@ with divs[6]:
     mensual = df_f.groupby("mes")[seleccionados].mean().reset_index()
     largom = mensual.melt(id_vars=["mes"], var_name="contaminante", value_name="valor")
     figm = px.line(largom, x="mes", y="valor",facet_col="contaminante", facet_col_wrap=3,
-        markers=True,title="Promedio por mes (escala independiente por contaminante)")
+        markers=True,title="Promedio por mes")
     st.plotly_chart(figm, use_container_width=True)
 
     # Anual
@@ -246,7 +246,8 @@ with divs[6]:
     largoa = anual.melt(id_vars=["anio"], var_name="contaminante", value_name="valor")
 
     figa = px.line(largoa, x="anio", y="valor",facet_col="contaminante", facet_col_wrap=3,
-        markers=True,title="Promedio por año (escala independiente por contaminante)")
+        markers=True,title="Promedio por año")
+    figm.for_each_yaxis(lambda ax: ax.update(matches=None))
     st.plotly_chart(figa, use_container_width=True)
 
 #Tab 8: Estadísticas por estación
