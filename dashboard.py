@@ -123,7 +123,7 @@ f0, f1 = st.sidebar.date_input("Rango de fechas", value=(fmin, fmax), min_value=
 f0 = pd.to_datetime(f0)
 f1 = pd.to_datetime(f1)
 
-seleccionados= st.sidebar.multiselect("Variables a incluir", contaminantes, default=contaminantes)
+seleccionados= st.sidebar.multiselect("Contaminantes", contaminantes, default=contaminantes)
 if len(seleccionados)<2:
     print ("Selecciona mínimo 2 contaminantes")
     st.stop()
@@ -144,3 +144,24 @@ if df_f.empty is True:
 divs = st.tabs(["Dataset", "Series de tiempo", "Correlación", "MDS", "PCA", "Secuencia", 
                 "Resumen temporal", "Comparación por estación"])
 
+#Tab 1: Dataset
+with divs[0]:
+    c1,c2,c3 = st.columns(3)
+    c1.metric("Filas", f"{len(df_f):,}")
+    c2.metric("Variables", f"{len(seleccionados)}")
+    c3.metric("Rango", f"{df_f['fecha'].min().date()} → {df_f['fecha'].max().date()}")
+    st.subheader("Vista previa")
+    st.dataframe(df_f[["fecha", "estacion"] + seleccionados].head(15), use_container_width=True)
+
+#Tab 2: Serie
+with divs[1]:
+    st.subheader("Series de tiempo")
+    colMost = st.multiselect("Variables a graficar", seleccionados, default=seleccionados[:min(4,len(seleccionados))])
+    if not colMost:
+        st.warning("Escoge por lo menos una variable para graficar")
+    else:
+        suavizado= suavizar(df_f, colMost, window=window, method=metodo)
+        largo =suavizado.melt(id_vars=["fecha"], var_name="contaminante", value_name="valor")
+        fig =px.line(largo, x="fecha", y="valor", color="contaminante",
+                      title=f"Suavizado usando {metodo} para {window} días")
+        st.plotly_chart(fig, use_container_width=True)
