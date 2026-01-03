@@ -146,7 +146,7 @@ if df_f.empty is True:
     st.stop()
 
 divs = st.tabs(["Dataset", "Series de tiempo", "Correlación", "MDS", "PCA", "Resumen temporal", 
-                "Comparación por estación", "Información extra"])
+                "Comparación por estación", "Patrón semanal"])
 
 #Tab 1: Dataset
 with divs[0]:
@@ -263,27 +263,8 @@ with divs[6]:
     st.plotly_chart(fig2, use_container_width=True)
 
 with divs[7]:
-    st.subheader("Extremos y patrón semanal")
+    st.subheader("Patrón semanal")
     var = st.selectbox("Contaminante", seleccionados, index=0, key="ext_var")
-    p =st.slider("Percentil para definir extremos", 0.90, 0.99, 0.95, 0.01)
-    temp = df_f[["fecha", var]].dropna().sort_values("fecha").copy()
-    if len(temp)< 30:
-        st.error("Muy pocos datos para calcular la información")
-        st.stop()
-
-    thr = temp[var].quantile(p)
-    n_ext = int((temp[var] > thr).sum())
-    perc_ext = 100 * n_ext / len(temp)
-    top = temp.nlargest(10, var).copy()
-    top["fecha"] = top["fecha"].dt.date
-
-    c1, c2, c3 = st.columns(3)
-    c1.metric(f"P{int(p*100)}", f"{thr:.3g}")
-    c2.metric(f"Días > P{int(p*100)}", f"{n_ext} ({perc_ext:.1f}%)")
-    c3.metric("Máximo", f"{temp[var].max():.3g}")
-    st.markdown("*Top 10 días más altos*")
-    st.dataframe(top[["fecha",var]], use_container_width=True)
-
     temp["dow"] = temp["fecha"].dt.dayofweek
     nombres = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"]
     dow = (temp.groupby("dow")[var].mean().reindex(range(7)).reset_index())
