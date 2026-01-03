@@ -174,7 +174,8 @@ with divs[1]:
 with divs[2]:
     st.subheader("Correlación entre contaminantes")
     corr = df_f[seleccionados].corr()
-    fig =px.imshow(corr, aspect="auto", zmin=-1, zmax=1, title="Matriz de correlación")
+    fig = px.imshow(corr,aspect="auto",zmin=-1, zmax=1, origin="lower",text_auto=".2f")
+    fig.update_layout(title="Matriz de correlación",coloraxis_colorbar=dict(title="r", tickvals=[-1, -0.5, 0, 0.5, 1]))
     st.plotly_chart(fig, use_container_width=True)
 
 #Normalización con z
