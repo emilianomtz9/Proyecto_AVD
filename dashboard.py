@@ -145,8 +145,8 @@ if df_f.empty is True:
     st.error("El filtro dejó el dataset vacío")
     st.stop()
 
-divs = st.tabs(["Dataset", "Series de tiempo", "Correlación", "MDS", "PCA", "Secuencia", 
-                "Resumen temporal", "Comparación por estación"])
+divs = st.tabs(["Dataset", "Series de tiempo", "Correlación", "MDS", "PCA", "Resumen temporal", 
+                "Comparación por estación"])
 
 #Tab 1: Dataset
 with divs[0]:
@@ -213,29 +213,8 @@ with divs[4]:
                       title="Variabilidad por componente")
         st.plotly_chart(fig2, use_container_width=True)
 
-#Tab 6: Secuencias ************************
+#Tab 6: Resumen temporal
 with divs[5]:
-    st.subheader("Relaciones de secuencia con desfase")
-    c1, c2= st.columns(2)
-    with c1:
-        a = st.selectbox("Variable 1", seleccionados, index=0)
-    with c2:
-        b = st.selectbox("Variable 2", seleccionados, index=min(1,len(seleccionados)-1))
-
-    lagmax= st.slider("Lag máximo en días", 1,180,60,1)
-    temp= df_f[["fecha", a, b]].dropna()
-    if len(temp)< 80:
-        st.error("Muy pocos datos para la secuencia de lags")
-    else:
-        cc = correlacionCruzada(temp[a].to_numpy(),temp[b].to_numpy(), max_lag=lagmax)
-        fig = px.line(cc, x="lag", y="corr", title=f"Correlación cruzada entre {a} y {b}")
-        fig.add_hline(y=0)
-        st.plotly_chart(fig, use_container_width=True)
-        mejor = cc.loc[cc["corr"].abs().idxmax()]
-        st.success(f"Lag con correlación máxima: {int(mejor['lag'])} días (corr = {mejor['corr']:.3f})")
-
-#Tab 7: Resumen temporal
-with divs[6]:
     st.subheader("Resumen temporal")
 
     #Mensual
@@ -259,8 +238,8 @@ with divs[6]:
     figa_norm = px.line(largoa, x="anio", y="valor_norm", color="contaminante", markers=True)
     st.plotly_chart(figa_norm, use_container_width=True)
 
-#Tab 8: Estadísticas por estación
-with divs[7]:
+#Tab 7: Estadísticas por estación
+with divs[6]:
     st.subheader("Comparación por estación del año")
     modo = st.radio("Escala", ["Real", "Normalizada"], horizontal=True)
     largo2 = df_f.melt(id_vars=["estacion"], value_vars=seleccionados,
