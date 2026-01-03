@@ -1,4 +1,4 @@
-#Proyecto Analítica y Visualización de datos 
+#Proyecto Analítica y Visualización de datos#
 Huerta Rodríguez Sofía
 Martínez Salinas Emiliano
 5AM1
