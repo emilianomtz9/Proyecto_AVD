@@ -84,7 +84,7 @@ df["anio"] = df["fecha"].dt.year
 df["estacion"] = df["fecha"].apply(estaciones)
 #print(df.head())
 contaminantes = [c for c in df.columns if c not in ["fecha", "mes", "anio", "estacion"]]
-colores =px.colors.qualitative.Dark24
+colores =px.colors.qualitative.Vivid
 color_map = {c: colores[i % len(colores)] for i, c in enumerate(contaminantes)}
 
 
