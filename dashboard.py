@@ -146,7 +146,7 @@ if df_f.empty is True:
     st.stop()
 
 divs = st.tabs(["Dataset", "Series de tiempo", "Correlación", "MDS", "PCA", "Resumen temporal", 
-                "Comparación por estación"])
+                "Comparación por estación", "Información extra"])
 
 #Tab 1: Dataset
 with divs[0]:
