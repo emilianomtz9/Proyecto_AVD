@@ -281,4 +281,11 @@ with divs[7]:
     orden_dias = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"]
     prom["dia"] = pd.Categorical(prom["dia"], categories=orden_dias, ordered=True)
 
+    h = min(220 * len(seleccionados) +200, 2000)
+    fig = px.bar(prom, x="dia", y="valor",facet_row="contaminante",
+        title="Promedio por día de la semana",height=h)
+    fig.update_layout(showlegend=False)
+    fig.update_yaxes(matches=None)
+    st.plotly_chart(fig, use_container_width=True)
+
 
