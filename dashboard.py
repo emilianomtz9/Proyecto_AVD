@@ -262,18 +262,25 @@ with divs[6]:
                 title=f"Distribución por estación")
     st.plotly_chart(fig2, use_container_width=True)
 
+#Tab 8: Promedio de contaminantes por semana
 with divs[7]:
     st.subheader("Patrón semanal")
     var = st.selectbox("Contaminante", seleccionados, index=0, key="ext_var")
+    temp = df_f[["fecha", var]].dropna().sort_values("fecha").copy()
+    if len(temp) <30:
+        st.error("Muy pocos datos para calcular el patrón semanal")
+        st.stop()
+
     temp["dow"] = temp["fecha"].dt.dayofweek
     nombres = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"]
-    dow = (temp.groupby("dow")[var].mean().reindex(range(7)).reset_index())
-    dow["dia"] =dow["dow"].map(lambda i: nombres[i])
-    fig = px.bar(dow, x="dia", y=var, title=f"Promedio por día de la semana {var}",labels={"dia": "Día", var: var})
+    dia = (temp.groupby("dow")[var].mean().reindex(range(7)).reset_index())
+    dia["dia"] = dia["dow"].map(lambda i: nombres[i])
+    fig = px.bar(dia, x="dia", y=var, title=f"Promedio por día de la semana {var}",
+        labels={"dia": "Día", var: var})
     st.plotly_chart(fig, use_container_width=True)
 
-    mediasem = float(dow.loc[dow["dow"].between(0, 4), var].mean())
-    mediasem = float(dow.loc[dow["dow"].between(5, 6), var].mean())
-    st.caption(f"Promedio Lun–Vie: {mediasem:.3g} | Sáb–Dom: {mediasem:.3g}")
+    media_lv = float(dow.loc[dia["dow"].between(0, 4), var].mean())
+    media_sd = float(dow.loc[dia["dow"].between(5, 6), var].mean())
+    st.caption(f"Promedio de lun-vie: {media_lv:.3g} | sáb–dom: {media_sd:.3g}")
 
 
