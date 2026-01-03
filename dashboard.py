@@ -74,40 +74,6 @@ def pcaContaminantes(series_tiempo):
     salida["variable"]= series_tiempo.columns.tolist()
     return salida, modeloPCA.explained_variance_ratio_
 
-def pcaDiasEstacion(df_filtrado, columnas):
-    #PCA sobre los días
-    X= df_filtrado[columnas].dropna()
-    Xz= StandardScaler().fit_transform(X)
-    modeloPCA= PCA(n_components=2, random_state=0)
-    coords= modeloPCA.fit_transform(Xz)
-    salida= pd.DataFrame(coords, columns=["PC1", "PC2"])
-    salida["estacion"] = df_filtrado.loc[X.index, "estacion"].values
-    return salida, modeloPCA.explained_variance_ratio_
-
-def correlacionCruzada(a,b, max_lag):
-    a= np.asarray(a, float)
-    b= np.asarray(b, float)
-    a= (a-a.mean()) / (a.std()+1e-12)
-    b= (b-b.mean()) / (b.std()+1e-12)
-    n= len(a)
-    lags = range(-max_lag, max_lag+1)
-    valores= []
-    for i in lags: 
-        if i<0:
-            x= a[-i:]
-            y= b[:n+i]
-        elif i>0:
-            x= a[:n- i]
-            y = b[i:]
-        else:
-            x=a
-            y=b
-        if len(x) < 20:
-            valores.append(np.nan)
-        else:
-            valores.append(float(np.corrcoef(x, y)[0, 1]))
-    return pd.DataFrame({"lag": list(lags), "corr": valores})
-
 #Interfaz streamlit
 st.set_page_config(page_title="Proyecto Analítica y Visualiación de Datos", layout="wide")
 st.title("Red Automática de Monitoreo Atmosférico CDMX")
@@ -118,6 +84,9 @@ df["anio"] = df["fecha"].dt.year
 df["estacion"] = df["fecha"].apply(estaciones)
 #print(df.head())
 contaminantes = [c for c in df.columns if c not in ["fecha", "mes", "anio", "estacion"]]
+colores =px.colors.qualitative.Dark24
+color_map = {c: palette[i % len(palette)] for i, c in enumerate(contaminantes)}
+
 
 #Sidebar
 st.sidebar.header("Controles")
@@ -264,7 +233,7 @@ with divs[6]:
 
 #Tab 8: Promedio de contaminantes por día de la semana
 with divs[7]:
-    st.subheader("Patrón semanal")
+    st.subheader("Promedio de semanal de los contaminantes")
     var = st.selectbox("Contaminante", seleccionados, index=0, key="ext_var")
     temp = df_f[["fecha", var]].dropna().sort_values("fecha").copy()
     if len(temp) <30:
@@ -280,13 +249,8 @@ with divs[7]:
     dia["dia"] = dia["dow"].map(lambda i: nombres[i])
     fig = px.bar(dia, x="dia", y=var, title=f"Promedio por día de la semana {var}",
         labels={"dia": "Día", var: var})
+    fig.update_traces(marker_color=colores.get(var))
     st.plotly_chart(fig, use_container_width=True)
-
-    mediasem = float(dow.loc[dow["dow"].between(0, 4), var].mean())
-    mediasem = float(dow.loc[dow["dow"].between(5, 6), var].mean())
-    st.caption(f"Promedio Lun–Vie: {mediasem:.3g} | Sáb–Dom: {mediasem:.3g}")
     media_lv = float(dow.loc[dia["dow"].between(0, 4), var].mean())
     media_sd = float(dow.loc[dia["dow"].between(5, 6), var].mean())
     st.caption(f"Promedio de lun-vie: {media_lv:.3g} | sáb–dom: {media_sd:.3g}")
-
-
