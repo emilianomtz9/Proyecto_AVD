@@ -249,7 +249,7 @@ with divs[7]:
     dia["dia"] = dia["dow"].map(lambda i: nombres[i])
     fig = px.bar(dia, x="dia", y=var, title=f"Promedio por día de la semana {var}",
         labels={"dia": "Día", var: var})
-    fig.update_traces(marker_color=colores.get(var))
+    fig.update_traces(marker_color=color_map[var])
     st.plotly_chart(fig, use_container_width=True)
     media_lv = float(dow.loc[dia["dow"].between(0, 4), var].mean())
     media_sd = float(dow.loc[dia["dow"].between(5, 6), var].mean())
