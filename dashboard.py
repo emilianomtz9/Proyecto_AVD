@@ -265,27 +265,28 @@ with divs[6]:
 #Tab 8: Promedio de contaminantes por día de la semana
 with divs[7]:
     st.subheader("Patrón semanal")
-    temp = df_f[["fecha"] + seleccionados].dropna().copy()
+    var = st.selectbox("Contaminante", seleccionados, index=0, key="ext_var")
+    temp = df_f[["fecha", var]].dropna().sort_values("fecha").copy()
     if len(temp) <30:
         st.error("Muy pocos datos para calcular el patrón semanal")
         st.stop()
 
-    temp["diaS"] = temp["fecha"].dt.dayofweek
-    diasSem = {0:"Lun", 1:"Mar", 2:"Mié", 3:"Jue", 4:"Vie", 5:"Sáb", 6:"Dom"}
-
-    largo = temp.melt(id_vars=["diaS"], value_vars=seleccionados, var_name="contaminante", 
-                      value_name="valor")
-    prom = (largo.groupby(["contaminante","diaS"], as_index=False)["valor"].mean())
-    prom["dia"] = prom["diaS"].map(diasSem)
-    prom["contaminante"] = pd.Categorical(prom["contaminante"],categories=seleccionados,ordered=True)
-    orden_dias = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"]
-    prom["dia"] = pd.Categorical(prom["dia"], categories=orden_dias, ordered=True)
-
-    h = min(220 * len(seleccionados) +200, 2000)
-    fig = px.bar(prom, x="dia", y="valor",facet_row="contaminante",
-        title="Promedio por día de la semana",height=h)
-    fig.update_layout(showlegend=False)
-    fig.update_yaxes(matches=None)
+    temp["dow"] = temp["fecha"].dt.dayofweek
+    nombres = ["Lun","Mar","Mié","Jue","Vie","Sáb","Dom"]
+    dow = (temp.groupby("dow")[var].mean().reindex(range(7)).reset_index())
+    dow["dia"] =dow["dow"].map(lambda i: nombres[i])
+    fig = px.bar(dow, x="dia", y=var, title=f"Promedio por día de la semana {var}",labels={"dia": "Día", var: var})
+    dia = (temp.groupby("dow")[var].mean().reindex(range(7)).reset_index())
+    dia["dia"] = dia["dow"].map(lambda i: nombres[i])
+    fig = px.bar(dia, x="dia", y=var, title=f"Promedio por día de la semana {var}",
+        labels={"dia": "Día", var: var})
     st.plotly_chart(fig, use_container_width=True)
+
+    mediasem = float(dow.loc[dow["dow"].between(0, 4), var].mean())
+    mediasem = float(dow.loc[dow["dow"].between(5, 6), var].mean())
+    st.caption(f"Promedio Lun–Vie: {mediasem:.3g} | Sáb–Dom: {mediasem:.3g}")
+    media_lv = float(dow.loc[dia["dow"].between(0, 4), var].mean())
+    media_sd = float(dow.loc[dia["dow"].between(5, 6), var].mean())
+    st.caption(f"Promedio de lun-vie: {media_lv:.3g} | sáb–dom: {media_sd:.3g}")
 
 
