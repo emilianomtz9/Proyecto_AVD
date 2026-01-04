@@ -253,4 +253,5 @@ with divs[7]:
     st.plotly_chart(fig, use_container_width=True)
     media_lv = float(dow.loc[dia["dow"].between(0, 4), var].mean())
     media_sd = float(dow.loc[dia["dow"].between(5, 6), var].mean())
-    st.caption(f"Promedio de lun-vie: {media_lv:.3g} \nsáb–dom: {media_sd:.3g}")
+    st.caption(f"Promedio lun–vie: {media_lv:.3g}")
+    st.caption(f"Promedio sáb–dom: {media_sd:.3g}")
