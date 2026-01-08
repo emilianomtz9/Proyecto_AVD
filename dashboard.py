@@ -142,7 +142,7 @@ with divs[1]:
 
 #Tab 3: Correlación
 with divs[2]:
-    st.subheader("Correlación entre contaminantes")
+    st.subheader("Correlación entre contaminantes (Pearson)")
     corr = df_f[seleccionados].corr()
     fig = px.imshow(corr,aspect="auto",zmin=-1, zmax=1 ,text_auto=".2f")
     fig.update_layout(title="Matriz de correlación",coloraxis_colorbar=dict(tickvals=[-1, -0.5, 0, 0.5, 1]))
