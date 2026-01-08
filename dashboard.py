@@ -79,6 +79,7 @@ st.set_page_config(page_title="Proyecto Analítica y Visualiación de Datos", la
 st.title("Red Automática de Monitoreo Atmosférico CDMX")
 
 df= cargar_datos(ruta)
+df = df[df["fecha"]<"2023-01-01"].copy()
 df["mes"]= df["fecha"].dt.month
 df["anio"] = df["fecha"].dt.year
 df["estacion"] = df["fecha"].apply(estaciones)
@@ -122,7 +123,7 @@ with divs[0]:
     c1,c2,c3 = st.columns(3)
     c1.metric("Filas", f"{len(df_f):,}")
     c2.metric("Variables", f"{len(seleccionados)}")
-    c3.metric("Rango", "2015 → 2023")
+    c3.metric("Rango", "2015 → 2022")
     st.subheader("Vista previa")
     st.dataframe(df_f[["fecha", "estacion"] + seleccionados].head(15), use_container_width=True)
 
