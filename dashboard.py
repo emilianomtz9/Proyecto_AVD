@@ -161,6 +161,12 @@ with divs[3]:
         st.error("Muy pocos datos para ocupar MDS")
     else:
         matriz= matrizDistancia(xz, metrica)
+
+        st.markdown("Matriz de distancias entre contaminantes")
+        figd = px.imshow(matriz, aspect="auto", text_auto=".2f")
+        figd.update_yaxes(autorange="reversed")
+        st.plotly_chart(figd, use_container_width=True)
+        
         z = funcionMDS(matriz)
         fig = px.scatter(z, x="MDS1", y="MDS2", text="variable", hover_name="variable", 
                          title=f"MDS con estandarización ")
