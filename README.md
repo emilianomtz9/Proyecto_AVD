@@ -10,7 +10,7 @@ Martínez Salinas Emiliano
 
 Este proyecto es un dashboard desarrollado en streamlit ocupando el archivo rama_2023_05.csv.  El objetivo principal es explorar patrones temporales y relaciones entre variables mediante técnicas de análisis y visualización de datos.
 
-El conjunto de datos contiene los promedios diarios de los registros de distintos contaminantes en la Ciudad de México desde el 2015 a 2023, entre los cuáles podemos encontrar:
+El conjunto de datos contiene los promedios diarios de los registros de distintos contaminantes en la Ciudad de México desde el 2015 a 2022, entre los cuáles podemos encontrar:
 - Ozono (O3)
 - Dióxido de azufre (SO2)
 - Óxidos de nitrógeno (NOx)
